@@ -17,30 +17,6 @@ exports.createPost = (req, res, next) => {
     }
     res.json(result);
   });
-
-  // form.parse(req, (err, fields, files) => {
-  //   if (err) {
-  //     console.log(err.message);
-  //     return res.status(400).json({
-  //       error: "Image could not be uploaded"
-  //     })
-  //   }
-  //   let post = new Post(fields);
-  //   post.postedBy = req.profile;
-  //   if (files.photo) {
-  //     post.photo.data = fs.readFileSync(files.photo.path);
-  //     post.photo.contentType = files.photo.type;
-  //   }
-  //   post.save((err, result) => {
-  //     if (err) {
-
-  //       return res.status(400).json({
-  //         err: err
-  //       })
-  //     }
-  //     res.json(result);
-  //   });
-  // });
 };
 
 exports.getPosts =  (req, res) => {

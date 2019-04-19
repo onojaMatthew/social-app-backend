@@ -56,8 +56,8 @@ exports.updateUser = (req, res, next) => {
       user.hashed_password = undefined;
       user.salt = undefined;
       res.json(user);
-    })
-  })
+    });
+  });
 }
 
 exports.deleteUser = (req, res, next) => {
@@ -71,6 +71,54 @@ exports.deleteUser = (req, res, next) => {
   
     res.json({
       message: "User deleted successfully"
-    })
+    });
+  });
+}
+
+exports.addFollowing = (req, res, next) => {
+  User.findByIdAndUpdate(req.body.userId, {$push:  { following: req.body.followId} }, (err, result) => {
+    if (err) return res.status(400).json({
+      error: err
+    });
+    next();
+  });
+}
+
+exports.addFollower = (req, res, next) => {
+  User.findByIdAndUpdate(req.body.followId, { $push: { followers: req.body.userId }}, {
+    new: true
   })
+    .populate("followers", "_id name")
+    .populate("following", "_id name")
+    .exec((err, result) => {
+      if (err) return res.status(400).json({
+        error: err
+      });
+      result.hashed_password = undefined;
+      result.salt = undefined;
+      res.json(result);
+    });
+}
+
+exports.removeFollowing = (req, res, next) => {
+  User.findByIdAndUpdate(req.body.userId, { $pull: { following: req.body.unfollowId }}, (err, result) => {
+    if (err) return res.status(400).json({
+      error: err
+    });
+    next();
+  });
+}
+
+exports.removeFollower = (req, res, next) => {
+  User.findByIdAndUpdate(req.body.unfollowId, {$pull: { followers: req.body.userId}}, { new: true })
+    .populate("followers", "_id name")
+    .populate("following", "_id name")
+    .exec((err, result) => {
+      if (err) return res.status(400).json({
+        error: err
+      });
+      result.hashed_password = undefined;
+      result.salt = undefined;
+      res.json(result);
+    });
 }
