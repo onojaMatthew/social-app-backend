@@ -4,31 +4,58 @@ const { isPoster } = require("../middleware/auth");
 const formidable = require("formidable");
 
 exports.createPost = (req, res, next) => {
-  console.log(req.file)
   
-  let form = new formidable.IncomingForm();
+  const form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  let post = new Post(req.body);
-  post.postedBy = req.profile;
-  // post.photo = req.file.path;
-  post.save((err, result) => {
+  form.parse(req, (err, fields, files) => {
     if (err) {
-      return next(err);
+      return res.json(400).json({
+        error: "Failed to upload photo"
+      });
     }
-    res.json(result);
+
+    let post = new Post(fields);
+    post.postedBy = req.profile;
+
+    if (files.photo) {
+      post.photo.data = fs.readFileSync(files.photo.path);
+      post.photo.contentType = files.photo.type;
+    }
+    post.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err
+        })
+      }
+      
+      res.json(result);
+    });
   });
 };
 
 exports.getPosts =  (req, res) => {
   const posts = Post.find()
-  .populate("postedBy", "_id name")
-  .select("_id title body")
+    .populate("postedBy", "_id name")
+    .select("_id title body created")
+    .sort({ created: -1 })
     .then((posts) => {
-      res.json({
-        posts
-      });
+      res.json(posts);
     })
     .catch(err => console.log(err.message));
+}
+
+exports.postById = (req, res, next, id) => {
+  Post.findById(id)
+    .populate("postedBy", "_id name")
+    .exec((err, post) => {
+      if (err || !post) {
+        return res.status(400).json({
+          error: err
+        });
+      }
+      req.post = post;
+      next();
+    });
 }
 
 exports.getpostsBy = (req, res, next) => {
@@ -57,4 +84,13 @@ exports.deletePost = (req, res, next) => {
       message: "Post successfully deleted"
     });
   });
+}
+
+exports.photo = (req, res, next) => {
+  res.set("Content-Type", res.post.photo.contentType);
+  return res.send(req.post.photo.data);
+}
+
+exports.singlePost = (req, res, next) => {
+  return res.json(req.post);
 }

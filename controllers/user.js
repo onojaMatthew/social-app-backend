@@ -21,6 +21,22 @@ exports.getUser = (req, res, next) => {
   return res.status(200).json(req.profile);
 }
 
+exports.userById = (req, res, next, id) => {
+  User.findById(id)
+    .populate("following", "_id name")
+    .populate("followers", "_id name")
+    .exec((err, user) => {
+      if (err || !user) {
+        return res.status(400).json({
+          error: "User not found"
+        });
+      }
+
+    req.profile = user;
+    next();
+  });
+}
+
 exports.userPhoto = (req, res, next) => {
   if (req.profile.photo.data) {
     res.set("Content-Type", req.profile.photo.contentType);

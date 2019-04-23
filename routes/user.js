@@ -1,5 +1,5 @@
 const express = require("express");
-const { requireSignin, userById } = require("../middleware/auth");
+const { requireSignin } = require("../middleware/auth");
 const { 
   allUser, 
   getUser, 
@@ -11,6 +11,7 @@ const {
   addFollowing, 
   addFollower,
   findPeople,
+  userById,
 } = require("../controllers/user");
 
 const router = express.Router();

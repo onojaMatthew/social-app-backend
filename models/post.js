@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
-  photo: { type: String },
+  photo: { data: Buffer, ContentType: String },
   postedBy: { type: ObjectId, ref: "User"},
   created: { type: Date, default: Date.now }
 });

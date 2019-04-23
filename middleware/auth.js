@@ -8,22 +8,6 @@ exports.requireSignin = expressJwt({
   userProperty: "auth"
 });
 
-exports.userById = (req, res, next, id) => {
-  User.findById(id)
-    .populate("following", "_id name")
-    .populate("followers", "_id name")
-    .exec((err, user) => {
-      if (err || !user) {
-        return res.status(400).json({
-          error: "User not found"
-        });
-      }
-
-    req.profile = user;
-    next();
-  });
-}
-
 exports.hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id === req.auth._id;
   if (!authorized) {
@@ -31,20 +15,6 @@ exports.hasAuthorization = (req, res, next) => {
       error: "User not allowed to perform this operation. Please sign in."
     });
   }
-}
-
-exports.postById = (req, res, next, id) => {
-  Post.find(id)
-    .populate("postedBy", "_id name")
-    .exec((err, post) => {
-      if (err || !post) {
-        return res.status(400).json({
-          error: err
-        });
-      }
-      req.post = post;
-      next();
-    });
 }
 
 exports.isPoster = (req, res, next) => {
