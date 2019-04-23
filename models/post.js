@@ -8,7 +8,8 @@ const postSchema = new Schema({
   body: { type: String, required: true },
   photo: { data: Buffer, ContentType: String },
   postedBy: { type: ObjectId, ref: "User"},
-  created: { type: Date, default: Date.now }
+  created: { type: Date, default: Date.now },
+  updated: Date,
 });
 
 const Post = mongoose.model("Post", postSchema);
