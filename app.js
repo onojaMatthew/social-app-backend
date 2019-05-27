@@ -29,7 +29,7 @@ app.use((err, req, res, next) => {
       error: "Unauthorized!"
     })
   }
-})
+});
 
 
 const port = process.env.PORT || 8080;

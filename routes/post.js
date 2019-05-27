@@ -7,7 +7,9 @@ const {
   postById, 
   photo, 
   singlePost,
-  updatePost, 
+  updatePost,
+  like,
+  unlike,
 } = require("../controllers/post");
 const { createPostValidator } = require("../validator");
 const { requireSignin, isPoster } = require("../middleware/auth");
@@ -16,6 +18,8 @@ const { userById } = require("../controllers/user");
 const router = express.Router();
 
 router.get("/", getPosts);
+router.put("/post/like", requireSignin, like);
+router.put("/post/unlike", requireSignin, unlike);
 router.post("/post/new/:userId", requireSignin, createPost, createPostValidator);
 router.get("/post/:postId", singlePost);
 router.put("/post/:postId", requireSignin, updatePost);

@@ -37,8 +37,7 @@ exports.userSignupValidator = (req, res, next) => {
   });
 
   // password
-  req.check("password", "Password is required").notEmpty();
-  req.check("password")
+  req.check("password", "Password is required").notEmpty()
   .matches(/\d/)
   .withMessage("Password must contain a number")
   .isLength({
