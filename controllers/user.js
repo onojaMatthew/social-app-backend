@@ -54,7 +54,7 @@ exports.updateUser = (req, res, next) => {
         error: "Failed to upload photo"
       });
     }
-
+    
     let user = req.profile;
     user = _.extend(user, fields);
     user.updated = Date.now();
